@@ -1,0 +1,599 @@
+<Window x:Class="PalworldServerManager.UnifiedSettingsEditor" x:Name="ThisWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PalworldServerManager" xmlns:controls="clr-namespace:PalworldServerManager.Controls"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        mc:Ignorable="d"
+        Title="服务器总体参数配置窗口" Height="850" Width="1125" MaxWidth="1500" Icon="Resources\icon_EditDocument.png">
+
+    <Window.Resources>
+        <controls:NumberBoxFormatter x:Key="DecimalFormatter"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel>
+            <Menu>
+                <MenuItem x:Name="FileMenuLoad" Header="导入" Click="FileMenuLoad_Click" FontSize="20" Width="80">
+                    <MenuItem.Icon>
+                        <ui:SymbolIcon Symbol="OpenFile"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Name="FileMenuSave" Header="保存" Click="FileMenuSave_Click" FontSize="20" Width="80">
+                    <MenuItem.Icon>
+                        <ui:SymbolIcon Symbol="Save"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Name="FileMenuExit" Header="退出" Click="FileMenuExit_Click" FontSize="20" Width="80">
+                    <MenuItem.Icon>
+                        <ui:SymbolIcon Symbol="Cancel"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </Menu>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10,5,0,0">
+                <TextBlock Text="当前配置档：" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <ComboBox x:Name="ProfileComboBox" SelectedIndex="0" SelectionChanged="ProfileComboBox_SelectionChanged" Width="150">
+                    <ComboBoxItem Content="默认配置"/>
+                    <ComboBoxItem Content="配置档 0"/>
+                    <ComboBoxItem Content="配置档 1"/>
+                </ComboBox>
+            </StackPanel>
+        </DockPanel>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="2" Padding="5">
+            <StackPanel>
+
+                <!-- 0. 服务器连接设置 -->
+                <Border BorderBrush="Black" BorderThickness="1" CornerRadius="6">
+                    <Expander Header="服务器连接设置" IsExpanded="True" Margin="10,5,10,5" Padding="5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                                <DockPanel Margin="0,3,0,0">
+                                    <TextBlock Text="服务器名称" VerticalAlignment="Center" Width="120"/>
+                                    <TextBox Text="{Binding HostSettings.ServerName, Mode=TwoWay}" TextWrapping="Wrap" Height="50"/>
+                                </DockPanel>
+                                <DockPanel Margin="0,3,0,0">
+                                    <TextBlock Text="服务器描述" VerticalAlignment="Top" Width="120" Margin="0,3,0,0"/>
+                                    <TextBox Text="{Binding HostSettings.ServerDescription, Mode=TwoWay}" TextWrapping="Wrap" Height="70"/>
+                                </DockPanel>
+                                <DockPanel Margin="0,3,0,0">
+                                    <TextBlock Text="连接端口" VerticalAlignment="Center" Width="120" ToolTip="服务器监听端口"/>
+                                    <ui:NumberBox Value="{Binding HostSettings.Port, Mode=TwoWay}" Maximum="65535" Minimum="1" SpinButtonPlacementMode="Inline" HorizontalAlignment="Stretch"/>
+                                </DockPanel>
+                                <DockPanel Margin="0,3,0,0">
+                                    <TextBlock Text="最大玩家数" VerticalAlignment="Center" Width="120" ToolTip="服务器上在线玩家的最大数量"/>
+                                    <ui:NumberBox Value="{Binding HostSettings.ServerPlayerMaxNum, Mode=TwoWay}"  Maximum="100" Minimum="1" SpinButtonPlacementMode="Inline" HorizontalAlignment="Stretch"/>
+                                </DockPanel>
+                                <DockPanel Margin="0,3,0,0">
+                                    <TextBlock Text="难度" VerticalAlignment="Center" Width="120"/>
+                                    <ComboBox x:Name="DifficultyComboBox" HorizontalAlignment="Stretch" SelectionChanged="DifficultyComboBox_SelectionChanged">
+                                        <ComboBoxItem Content="无"/>
+                                        <ComboBoxItem Content="简单"/>
+                                        <ComboBoxItem Content="普通"/>
+                                        <ComboBoxItem Content="困难"/>
+                                    </ComboBox>
+                                </DockPanel>
+                                <DockPanel Margin="0,3,0,0">
+                                    <TextBlock Text="跨平台" VerticalAlignment="Center" Width="120"/>
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <CheckBox x:Name="CrossplaySteamCheckBox" Content="Steam"/>
+                                            <CheckBox x:Name="CrossplayXboxCheckBox" Content="Xbox" Margin="5,0,0,0"/>
+                                            <CheckBox x:Name="CrossplayPS5CheckBox" Content="PS5" Margin="5,0,0,0"/>
+                                        </StackPanel>
+                                        <CheckBox IsChecked="{Binding HostSettings.PublicLobby, Mode=TwoWay}" Content="展示在社群服务器列表" Margin="0,3,0,0"/>
+                                    </StackPanel>
+                                </DockPanel>
+                                <DockPanel Margin="0,3,0,0">
+                                    <TextBlock Text="服务器密码" VerticalAlignment="Center" Width="120"/>
+                                    <TextBox Text="{Binding HostSettings.ServerPassword, Mode=TwoWay}"/>
+                                </DockPanel>
+                                <DockPanel Margin="0,3,0,0">
+                                    <TextBlock Text="管理员密码" VerticalAlignment="Center" Width="120"/>
+                                    <TextBox Text="{Binding HostSettings.AdminPassword, Mode=TwoWay}"/>
+                                </DockPanel>
+                                <DockPanel Margin="0,3,0,0">
+                                    <TextBlock Text="聊天限制" VerticalAlignment="Center" Width="120" ToolTip="限制玩家每分钟内发送聊天的条数"/>
+                                    <ui:NumberBox Value="{Binding HostSettings.ChatPostLimitPerMinute, Mode=TwoWay}" Maximum="100" Minimum="0" SpinButtonPlacementMode="Inline" HorizontalAlignment="Stretch"/>
+                                </DockPanel>
+                                <DockPanel Margin="0,3,0,0">
+                                    <TextBlock Text="日志格式" VerticalAlignment="Center" Width="120"/>
+                                    <ComboBox x:Name="LogFormatComboBox" HorizontalAlignment="Stretch" SelectionChanged="LogFormatComboBox_SelectionChanged">
+                                        <ComboBoxItem Content="Text"/>
+                                        <ComboBoxItem Content="Json"/>
+                                    </ComboBox>
+                                </DockPanel>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                                <DockPanel>
+                                    <StackPanel Margin="0 0 15 0">
+                                        <CheckBox IsChecked="{Binding HostSettings.bAllowClientMod, Mode=TwoWay}" Content="允许客户端模组" Margin="0,5,0,0" MinHeight="28"/>
+                                        <CheckBox IsChecked="{Binding HostSettings.bIsShowJoinLeftMessage, Mode=TwoWay}" Content="显示加入/离开消息" Margin="0,5,0,0" MinHeight="28"/>
+                                        <CheckBox IsChecked="{Binding HostSettings.bIsUseBackupSaveData, Mode=TwoWay}" Content="启用世界备份" Margin="0,5,0,0" MinHeight="28"/>
+                                    </StackPanel>
+                                    <StackPanel Margin="0 0 15 0">
+                                        <CheckBox IsChecked="{Binding HostSettings.bIsMultiplay, Mode=TwoWay}" Content="启用多人游戏" Margin="0,5,0,0" MinHeight="28"/>
+                                        <CheckBox IsChecked="{Binding HostSettings.bUseAuth, Mode=TwoWay}" Content="启用认证" Margin="0,5,0,0" MinHeight="28"/>
+                                    </StackPanel>
+                                </DockPanel>
+                                <DockPanel Margin="0,5,0,0">
+                                    <TextBlock Text="合作最大玩家数" VerticalAlignment="Center" Width="120"/>
+                                    <ui:NumberBox Value="{Binding HostSettings.CoopPlayerMaxNum, Mode=TwoWay}" Width="140" Maximum="100" Minimum="1" SpinButtonPlacementMode="Inline" HorizontalAlignment="Left"/>
+                                </DockPanel>
+                                <Border BorderThickness="1" BorderBrush="Black" CornerRadius="3" Margin="5">
+                                    <StackPanel>
+                                        <CheckBox IsChecked="{Binding HostSettings.RCONEnabled, Mode=TwoWay}" Content="启用RCON（官方已弃用，请使用下方的REST）" Margin="0,5,0,0" MinHeight="28"/>
+                                        <DockPanel Margin="5">
+                                            <TextBlock Text="RCON端口" VerticalAlignment="Center" Width="120"/>
+                                            <ui:NumberBox Value="{Binding HostSettings.RCONPort, Mode=TwoWay}" Width="140" Maximum="65535" Minimum="1" SpinButtonPlacementMode="Inline" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+                                    </StackPanel>
+                                </Border>
+                                <Border BorderThickness="1" BorderBrush="Black" CornerRadius="3" Margin="5">
+                                    <StackPanel>
+
+                                        <CheckBox IsChecked="{Binding HostSettings.RESTAPIEnabled, Mode=TwoWay}" Content="启用REST API" Margin="0,5,0,0" MinHeight="28"/>
+                                        <DockPanel Margin="5">
+                                            <TextBlock Text="REST API端口" VerticalAlignment="Center" Width="120"/>
+                                            <ui:NumberBox Value="{Binding HostSettings.RESTAPIPort, Mode=TwoWay}" Width="140" Maximum="65535" Minimum="1" SpinButtonPlacementMode="Inline" HorizontalAlignment="Left"/>
+                                        </DockPanel>
+                                    </StackPanel>
+                                </Border>
+                                <DockPanel Margin="0,3,0,0">
+                                    <CheckBox IsChecked="{Binding HostSettings.bUseManualPublicIP, Mode=TwoWay}" Content="手动输入社群ip" VerticalAlignment="Center" Width="150"/>
+                                    <TextBox Text="{Binding HostSettings.PublicIP, Mode=TwoWay}" IsEnabled="{Binding HostSettings.bUseManualPublicIP, Mode=OneWay}" ToolTip="自动获取或者手动填写的公网ip。若要在社群服务器中显示并进入则该项必须正确填写。否则只能通过直连进入服务器。"/>
+                                </DockPanel>
+                                <DockPanel Margin="0,3,0,0">
+                                    <CheckBox IsChecked="{Binding HostSettings.bUseManualPublicPort, Mode=TwoWay}" Content="手动输入社群端口" VerticalAlignment="Center" Width="150"/>
+                                    <ui:NumberBox Value="{Binding HostSettings.PublicPort, Mode=TwoWay}" Maximum="65535" Minimum="0" SpinButtonPlacementMode="Inline" IsEnabled="{Binding HostSettings.bUseManualPublicPort, Mode=OneWay}"/>
+                                </DockPanel>
+                                <DockPanel Margin="0,5,0,0">
+                                    <TextBlock Text="服务器区域" VerticalAlignment="Center" Width="120"/>
+                                    <TextBox Text="{Binding HostSettings.Region, Mode=TwoWay}"/>
+                                </DockPanel>
+                                <DockPanel Margin="0,5,0,0">
+                                    <TextBlock Text="封禁列表URL" VerticalAlignment="Center" Width="120"/>
+                                    <TextBox Text="{Binding HostSettings.BanListURL, Mode=TwoWay}"/>
+                                </DockPanel>
+                            </StackPanel>
+                        </Grid>
+                    </Expander>
+                </Border>
+
+                <!-- 1. 性能 -->
+                <Border BorderBrush="Black" BorderThickness="1" CornerRadius="6">
+                    <Expander Header="性能" Margin="10,5,10,5" Padding="5">
+                         <StackPanel Orientation="Horizontal">
+                             <StackPanel Margin="0,0,10,0">
+                                 <DockPanel>
+                                     <TextBlock Text="据点最大数量" Width="175" VerticalAlignment="Center" ToolTip="世界内据点最大数量"/>
+                                     <ui:NumberBox Value="{Binding Performances.BaseCampMaxNum, Mode=TwoWay}" Width="160" SmallChange="1" Maximum="1000" Minimum="1" SpinButtonPlacementMode="Inline"/>
+                                 </DockPanel>
+                                 <DockPanel>
+                                     <TextBlock Text="每个公会最大据点数量" Width="175" VerticalAlignment="Center" ToolTip="每个公会最大据点数量。默认: 4 (最大 10)。提高此值会增加处理负载。"/>
+                                     <ui:NumberBox Value="{Binding Performances.BaseCampMaxNumInGuild, Mode=TwoWay}" Width="160" SmallChange="1" Maximum="10" Minimum="1" SpinButtonPlacementMode="Inline"/>
+                                 </DockPanel>
+                                 <DockPanel>
+                                     <TextBlock Text="每个据点最大帕鲁数量" Width="175" VerticalAlignment="Center" ToolTip="每个据点最大帕鲁数量 (最大 50)。提高此值会增加处理负载。"/>
+                                     <ui:NumberBox Value="{Binding Performances.BaseCampWorkerMaxNum, Mode=TwoWay}" Width="160" SmallChange="1" Maximum="50" Minimum="1" SpinButtonPlacementMode="Inline"/>
+                                 </DockPanel>
+                                 <DockPanel>
+                                     <TextBlock Text="世界内的掉落物上限" Width="175" VerticalAlignment="Center" ToolTip="掉落物品最大数量"/>
+                                     <ui:NumberBox Value="{Binding Performances.DropItemMaxNum, Mode=TwoWay}" Width="160" SmallChange="100" Maximum="10000" Minimum="0" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="世界内的掉落物上限（粪便）" Width="175" VerticalAlignment="Center" ToolTip="掉落物品最大数量（粪便）"/>
+                                    <ui:NumberBox Value="{Binding Performances.DropItemMaxNum_UNKO, Mode=TwoWay}" Width="160" SmallChange="10" Maximum="1000" Minimum="0" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,10,0">
+                                <DockPanel>
+                                    <TextBlock Text="掉落物品存活时间(小时)" Width="175" VerticalAlignment="Center" ToolTip="掉落物品存活最大时间（小时）"/>
+                                    <ui:NumberBox Value="{Binding Performances.DropItemAliveMaxHours, Mode=TwoWay}" Width="160" SmallChange="0.5" Maximum="100" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                     <TextBlock Text="容器强制同步间隔(秒)" Width="175" VerticalAlignment="Center" ToolTip="容器UI打开时强制重新同步的间隔（秒）"/>
+                                     <ui:NumberBox Value="{Binding Performances.ItemContainerForceMarkDirtyInterval, Mode=TwoWay}" Width="160" SmallChange="0.5" Maximum="60" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                 </DockPanel>
+                                 <DockPanel>
+                                     <TextBlock Text="建筑数量上限(0=无限)" Width="175" VerticalAlignment="Center" ToolTip="每名玩家建筑数量上限（0 = 无限制）"/>
+                                     <ui:NumberBox Value="{Binding Performances.MaxBuildingLimitNum, Mode=TwoWay}" Width="160" SmallChange="10" Maximum="5000" Minimum="0" SpinButtonPlacementMode="Inline"/>
+                                 </DockPanel>
+                                 <DockPanel>
+                                     <TextBlock Text="帕鲁同步距离(厘米)" Width="175" VerticalAlignment="Center" ToolTip="帕鲁与玩家同步距离（厘米）。最小 5000 – 最大 15000。"/>
+                                     <ui:NumberBox Value="{Binding Performances.ServerReplicatePawnCullDistance, Mode=TwoWay}" Width="160" SmallChange="500" Maximum="15000" Minimum="5000" SpinButtonPlacementMode="Inline"/>
+                                 </DockPanel>
+                                 <DockPanel>
+                                     <TextBlock Text="自动保存间隔(秒)" Width="175" VerticalAlignment="Center" ToolTip="自动保存间隔（秒）"/>
+                                     <ui:NumberBox Value="{Binding Performances.AutoSaveSpan, Mode=TwoWay}" Width="160" SmallChange="5" Maximum="300" Minimum="5" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                 </DockPanel>
+                             </StackPanel>
+                             <StackPanel>
+                                 <CheckBox IsChecked="{Binding Performances.bUseMultiThreadPerformance, Mode=TwoWay}" Content="启用多线程性能优化" ToolTip="在多线程CPU环境中提升性能。"/>
+                                 <DockPanel Margin="0,5,0,0" IsEnabled="{Binding Performances.bUseMultiThreadPerformance, Mode=OneWay}">
+                                     <TextBlock Text="多线程进程数" Width="140" VerticalAlignment="Center" ToolTip="进程数设置。需与多线程性能参数配合使用。最大值为 CPU 线程数 - 1。"/>
+                                     <ui:NumberBox x:Name="WorkerThreadsNumberBox" Value="{Binding Performances.NumberOfWorkerThreadsServer, Mode=TwoWay}" Width="100" SmallChange="1" Maximum="64" Minimum="1" SpinButtonPlacementMode="Inline"/>
+                                 </DockPanel>
+                             </StackPanel>
+                         </StackPanel>
+                    </Expander>
+                </Border>
+
+                <!-- 2. 功能 -->
+                <Border BorderBrush="Black" BorderThickness="1" CornerRadius="6">
+                    <Expander Header="功能" Margin="10,5,10,5" Padding="5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                                <TextBlock Text="属性分配" FontWeight="Bold" Margin="0,0,0,3" FontSize="20"/>
+                                <CheckBox Content="允许分配攻击属性" IsChecked="{Binding Features.bAllowEnhanceStat_Attack, Mode=TwoWay}" ToolTip="允许分配属性点到攻击" Margin="0,3,0,0"/>
+                                <CheckBox Content="允许分配生命属性" IsChecked="{Binding Features.bAllowEnhanceStat_Health, Mode=TwoWay}" ToolTip="允许分配属性点到生命值" Margin="0,3,0,0"/>
+                                <CheckBox Content="允许分配耐力属性" IsChecked="{Binding Features.bAllowEnhanceStat_Stamina, Mode=TwoWay}" ToolTip="允许分配属性点到耐力" Margin="0,3,0,0"/>
+                                <CheckBox Content="允许分配负重属性" IsChecked="{Binding Features.bAllowEnhanceStat_Weight, Mode=TwoWay}" ToolTip="允许分配属性点到负重" Margin="0,3,0,0"/>
+                                <CheckBox Content="允许分配工作速度属性" IsChecked="{Binding Features.bAllowEnhanceStat_WorkSpeed, Mode=TwoWay}" ToolTip="允许分配属性点到工作速度" Margin="0,3,0,0"/>
+                                <TextBlock Text="全局帕鲁箱" FontWeight="Bold" Margin="0,8,0,3" FontSize="20"/>
+                                <CheckBox Content="允许导出至全局帕鲁箱" IsChecked="{Binding Features.bAllowGlobalPalboxExport, Mode=TwoWay}" ToolTip="是否允许通过跨界帕鲁终端保存帕鲁的基因序列" Margin="0,3,0,0"/>
+                                <CheckBox Content="允许从全局帕鲁箱导入" IsChecked="{Binding Features.bAllowGlobalPalboxImport, Mode=TwoWay}" ToolTip="是否允许通过跨界帕鲁终端中的基因序列复原帕鲁" Margin="0,3,0,0"/>
+                                <TextBlock Text="帕鲁生成" FontWeight="Bold" Margin="0,8,0,3" FontSize="20"/>
+                                <DockPanel>
+                                    <TextBlock Text="帕鲁随机生成模式" Width="150" VerticalAlignment="Center" ToolTip="帕鲁随机生成模式: None=不随机, Region=按区域随机, All=完全随机"/>
+                                    <ComboBox x:Name="RandomizerTypeComboBox" Width="175" HorizontalAlignment="Left" SelectionChanged="RandomizerType_SelectionChanged">
+                                        <ComboBoxItem Content="不随机"/>
+                                        <ComboBoxItem Content="按区域随机"/>
+                                        <ComboBoxItem Content="完全随机"/>
+                                    </ComboBox>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="随机生成种子值" Width="150" VerticalAlignment="Center" ToolTip="帕鲁随机生成种子值"/>
+                                    <TextBox x:Name="RandomizerSeedTextBox" Text="{Binding Features.RandomizerSeed, Mode=TwoWay}" Width="175" HorizontalAlignment="Left"/>
+                                </DockPanel>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="5,0,5,0">
+                                <TextBlock Text="公会与玩家" FontWeight="Bold" Margin="0,0,0,3" FontSize="20"/>
+                                <CheckBox Content="自动重置公会建筑和帕鲁" IsChecked="{Binding Features.bAutoResetGuildNoOnlinePlayers, Mode=TwoWay}" ToolTip="无公会成员登录时，自动删除建筑和基地帕鲁" Margin="0,3,0,0"/>
+                                <DockPanel>
+                                    <TextBlock Text="公会自动重置离线时间(时)" Width="175" VerticalAlignment="Center" ToolTip="公会无在线玩家时触发自动重置的离线时长（小时）。仅在自动重置公会建筑和帕鲁为 true 时生效。"/>
+                                    <ui:NumberBox Value="{Binding Features.AutoResetGuildTimeNoOnlinePlayers, Mode=TwoWay}" Width="175" SmallChange="1" Maximum="720" Minimum="0" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="公会最大玩家数" Width="175" VerticalAlignment="Center" ToolTip="公会最大玩家数"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.GuildPlayerMaxNum, Mode=TwoWay}" Width="175" SmallChange="1" Maximum="100" Minimum="1" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="公会重新加入冷却(分钟)" Width="175" VerticalAlignment="Center" ToolTip="公会重新加入冷却时间（分钟）"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.GuildRejoinCooldownMinutes, Mode=TwoWay}" Width="175" SmallChange="1" Maximum="1440" Minimum="0" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <CheckBox x:Name="CheckCanPickupOtherGuildDeathPenaltyDrop" Content="可拾取其他公会死亡掉落" IsChecked="{Binding Features.bCanPickupOtherGuildDeathPenaltyDrop, Mode=TwoWay}" ToolTip="能否拾取其他公会的死亡掉落物品" Margin="0,3,0,0"/>
+                                <CheckBox x:Name="CheckEnableFriendlyFire" Content="启用友军伤害" IsChecked="{Binding Features.bEnableFriendlyFire, Mode=TwoWay}" ToolTip="启用友军伤害" Margin="0,3,0,0"/>
+                                <CheckBox x:Name="CheckEnablePlayerToPlayerDamage" Content="启用玩家间伤害" IsChecked="{Binding Features.bEnablePlayerToPlayerDamage, Mode=TwoWay}" ToolTip="启用玩家间伤害" Margin="0,3,0,0"/>
+                                <CheckBox Content="启用硬核模式" IsChecked="{Binding Features.bHardcore, Mode=TwoWay}" ToolTip="启用硬核模式（死亡后无法复活）" Margin="0,3,0,0"/>
+                                <CheckBox Content="硬核模式可重建角色" IsChecked="{Binding Features.bCharacterRecreateInHardcore, Mode=TwoWay}" ToolTip="硬核模式死亡后是否可重建角色" Margin="0,3,0,0"/>
+                                <CheckBox Content="启用离线惩罚" IsChecked="{Binding Features.bEnableNonLoginPenalty, Mode=TwoWay}" ToolTip="启用离线惩罚" Margin="0,3,0,0"/>
+                                <CheckBox Content="离线后进入睡眠状态" IsChecked="{Binding Features.bExistPlayerAfterLogout, Mode=TwoWay}" ToolTip="离线后玩家是否在当前位置进入睡眠状态" Margin="0,3,0,0"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Margin="5,0,0,0">
+                                <TextBlock Text="其他功能" FontWeight="Bold" Margin="0,0,0,3" FontSize="20"/>
+                                <CheckBox Content="启用粪便掉落" IsChecked="{Binding Features.bActiveUNKO, Mode=TwoWay}" ToolTip="启用帕鲁粪便掉落" Margin="0,3,0,0"/>
+                                <CheckBox Content="禁止在传送点附近建造" IsChecked="{Binding Features.bBuildAreaLimit, Mode=TwoWay}" ToolTip="禁止在传送点等建筑附近建造" Margin="0,3,0,0"/>
+                                <CheckBox Content="启用键盘瞄准辅助" IsChecked="{Binding Features.bEnableAimAssistKeyboard, Mode=TwoWay}" ToolTip="启用键盘瞄准辅助" Margin="0,3,0,0"/>
+                                <CheckBox Content="启用手柄瞄准辅助" IsChecked="{Binding Features.bEnableAimAssistPad, Mode=TwoWay}" ToolTip="启用手柄瞄准辅助" Margin="0,3,0,0"/>
+                                <CheckBox Content="启用快速旅行" IsChecked="{Binding Features.bEnableFastTravel, Mode=TwoWay}" ToolTip="启用快速旅行" Margin="0,3,0,0"/>
+                                <CheckBox Content="仅限基地间快速旅行" IsChecked="{Binding Features.bEnableFastTravelOnlyBaseCamp, Mode=TwoWay}" ToolTip="仅限基地之间快速旅行" Margin="0,3,0,0"/>
+                                <CheckBox Content="启用袭击事件" IsChecked="{Binding Features.bEnableInvaderEnemy, Mode=TwoWay}" ToolTip="启用入侵者" Margin="0,3,0,0"/>
+                                <CheckBox Content="帕鲁等级完全随机" IsChecked="{Binding Features.bIsRandomizerPalLevelRandom, Mode=TwoWay}" ToolTip="若为 true，野生帕鲁等级完全随机；若为 false，在各区域预期范围内随机" Margin="0,3,0,0"/>
+                                <CheckBox Content="允许选择起始位置" IsChecked="{Binding Features.bIsStartLocationSelectByMap, Mode=TwoWay}" ToolTip="是否允许玩家选择起始位置" Margin="0,3,0,0"/>
+                                <CheckBox Content="ESC菜单显示玩家列表" IsChecked="{Binding Features.bShowPlayerList, Mode=TwoWay}" ToolTip="在ESC菜单中显示玩家列表" Margin="0,3,0,0"/>
+                                <CheckBox Content="捕食者Boss帕鲁" IsChecked="{Binding Features.EnablePredatorBossPal, Mode=TwoWay}" ToolTip="启用捕食者Boss帕鲁" Margin="0,3,0,0"/>
+                                
+                            </StackPanel>
+                        </Grid>
+                    </Expander>
+                </Border>
+
+                <!-- 3. 游戏平衡 -->
+                <Border BorderBrush="Black" BorderThickness="1" CornerRadius="6">
+                    <Expander Header="游戏平衡" Margin="10,5,10,5" Padding="5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                                <TextBlock Text="建筑与采集" FontWeight="Bold" Margin="0,0,0,3" FontSize="20"/>
+                                <DockPanel>
+                                    <TextBlock Text="对建筑伤害倍率" Width="175" VerticalAlignment="Center" ToolTip="对建筑造成的伤害倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.BuildObjectDamageRate, Mode=TwoWay}" Width="175" SmallChange="0.1" Maximum="100" Minimum="0.5" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="建筑物的腐化速度倍率" Width="175" VerticalAlignment="Center" ToolTip="建筑腐朽速度倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.BuildObjectDeteriorationDamageRate, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="建筑生命倍率" Width="175" VerticalAlignment="Center" ToolTip="建筑生命值倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.BuildObjectHpRate, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="经验值倍率" Width="175" VerticalAlignment="Center" ToolTip="经验获取倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.ExpRate, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="物品腐坏速度倍率" Width="175" VerticalAlignment="Center" ToolTip="物品腐坏速度倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.ItemCorruptionMultiplier, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="物品重量倍率" Width="175" VerticalAlignment="Center" ToolTip="物品重量倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.ItemWeightRate, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="道具采集量倍率" Width="175" VerticalAlignment="Center" ToolTip="可采集物品采集倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.CollectionDropRate, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.5" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="敌人掉落物品数量倍率" Width="175" VerticalAlignment="Center" ToolTip="敌人掉落物品数量倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.EnemyDropItemRate, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.5" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="装备耐久度降低倍率" Width="175" VerticalAlignment="Center" ToolTip="装备耐久损耗倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.EquipmentDurabilityDamageRate, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="可采集物体生命值倍率" Width="175" VerticalAlignment="Center" ToolTip="可采集物体生命值倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.CollectionObjectHpRate, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="可采集物体刷新间隔" Width="175" VerticalAlignment="Center" ToolTip="可采集物体刷新的间隔"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.CollectionObjectRespawnSpeedRate, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="5,0,5,0">
+                                <TextBlock Text="玩家" FontWeight="Bold" Margin="0,0,0,3" FontSize="20"/>
+                                <DockPanel>
+                                    <TextBlock Text="死亡惩罚" Width="183" VerticalAlignment="Center" ToolTip="死亡惩罚: None=无掉落, Item=掉落物品(除装备), ItemAndEquipment=掉落所有物品, All=掉落所有物品和队伍帕鲁"/>
+                                    <ComboBox x:Name="DeathPenaltyComboBox" Width="160" HorizontalAlignment="Left" SelectionChanged="DeathPenalty_SelectionChanged">
+                                        <ComboBoxItem Content="无掉落"/>
+                                        <ComboBoxItem Content="仅物品(除装备)"/>
+                                        <ComboBoxItem Content="所有物品"/>
+                                        <ComboBoxItem Content="所有物品和队伍中的帕鲁"/>
+                                    </ComboBox>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="复活冷却时间(秒)" Width="175" VerticalAlignment="Center" ToolTip="死亡后复活冷却时间（秒）"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.BlockRespawnTime, Mode=TwoWay}" Width="160" SmallChange="1" Maximum="300" Minimum="0" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="复活惩罚时长阈值(秒)" Width="175" VerticalAlignment="Center" ToolTip="应用复活惩罚倍率的复活间隔时间最大值（秒）"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.RespawnPenaltyDurationThreshold, Mode=TwoWay}" Width="160" SmallChange="1" Maximum="86400" Minimum="0" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="复活惩罚时间倍率" Width="175" VerticalAlignment="Center" ToolTip="复活冷却时间的倍率，冷却时间*时间倍率=下次死亡后重生的间隔"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.RespawnPenaltyTimeScale, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="捕获率倍率" Width="175" VerticalAlignment="Center" ToolTip="捕获率倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.PalCaptureRate, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.5" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="玩家造成伤害倍率" Width="175" VerticalAlignment="Center" ToolTip="玩家造成伤害倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.PlayerDamageRateAttack, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="玩家承受伤害倍率" Width="175" VerticalAlignment="Center" ToolTip="玩家承受伤害倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.PlayerDamageRateDefense, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="玩家生命值自然回复倍率" Width="175" VerticalAlignment="Center" ToolTip="玩家自然生命恢复倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.PlayerAutoHPRegeneRate, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="玩家睡眠时生命值回复倍率" Width="175" VerticalAlignment="Center" ToolTip="玩家睡眠中生命恢复倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.PlayerAutoHpRegeneRateInSleep, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="玩家耐力降低倍率" Width="175" VerticalAlignment="Center" ToolTip="玩家耐力消耗倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.PlayerStaminaDecreaceRate, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="玩家饱腹感降低倍率" Width="175" VerticalAlignment="Center" ToolTip="玩家饥饿速度倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.PlayerStomachDecreaceRate, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Margin="5,0,0,0">
+                                <TextBlock Text="帕鲁" FontWeight="Bold" Margin="0,0,0,3" FontSize="20"/>
+                                <CheckBox Content="帕鲁永久死亡" IsChecked="{Binding GameBalances.bPalLost, Mode=TwoWay}" ToolTip="帕鲁死亡时将永久失去该帕鲁" Margin="0,3,0,0"/>
+                                <DockPanel>
+                                    <TextBlock Text="帕鲁自然生命恢复倍率" Width="175" VerticalAlignment="Center" ToolTip="帕鲁自然生命恢复倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.PalAutoHPRegeneRate, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="帕鲁睡眠生命恢复倍率" Width="175" VerticalAlignment="Center" ToolTip="帕鲁睡眠中（帕鲁箱子）生命恢复倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.PalAutoHpRegeneRateInSleep, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="帕鲁耐力降低倍率" Width="175" VerticalAlignment="Center" ToolTip="帕鲁耐力消耗倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.PalStaminaDecreaceRate, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="帕鲁饱腹感降低倍率" Width="175" VerticalAlignment="Center" ToolTip="帕鲁饥饿速度倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.PalStomachDecreaceRate, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="帕鲁攻击伤害倍率" Width="175" VerticalAlignment="Center" ToolTip="帕鲁造成伤害倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.PalDamageRateAttack, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="帕鲁承受伤害倍率" Width="175" VerticalAlignment="Center" ToolTip="帕鲁承受伤害倍率"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.PalDamageRateDefense, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="帕鲁出现数量倍率" Width="175" VerticalAlignment="Center" ToolTip="帕鲁出现数量倍率（影响性能）"/>
+                                    <ui:NumberBox Value="{Binding GameBalances.PalSpawnNumRate, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.5" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                </DockPanel>
+                                <StackPanel Margin="0,0,5,0">
+                                    <TextBlock Text="杂项" FontWeight="Bold" Margin="0,0,0,3" FontSize="20"/>
+                                    <DockPanel>
+                                        <TextBlock Text="白天流逝速度" Width="175" VerticalAlignment="Center" ToolTip="白天时间流逝速度"/>
+                                        <ui:NumberBox Value="{Binding GameBalances.DayTimeSpeedRate, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="夜晚流逝速度" Width="175" VerticalAlignment="Center" ToolTip="夜晚时间流逝速度"/>
+                                        <ui:NumberBox Value="{Binding GameBalances.NightTimeSpeedRate, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="巨大蛋孵化所需时间(小时)" Width="175" VerticalAlignment="Center" ToolTip="巨大蛋孵化所需时间（小时）。其他蛋也会相应调整。"/>
+                                        <ui:NumberBox Value="{Binding GameBalances.PalEggDefaultHatchingTime, Mode=TwoWay}" Width="160" SmallChange="1" Maximum="720" Minimum="0" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="空投补给间隔(分钟)" Width="175" VerticalAlignment="Center" ToolTip="陨石/空投补给间隔（分钟）"/>
+                                        <ui:NumberBox Value="{Binding GameBalances.SupplyDropSpan, Mode=TwoWay}" Width="160" SmallChange="1" Maximum="1440" Minimum="1" SpinButtonPlacementMode="Inline"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="工作速度倍率" Width="175" VerticalAlignment="Center" ToolTip="工作速度倍率"/>
+                                        <ui:NumberBox Value="{Binding GameBalances.WorkSpeedRate, Mode=TwoWay}" Width="160" SmallChange="0.1" Maximum="100" Minimum="1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Inline"/>
+                                    </DockPanel>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </Expander>
+                </Border>
+
+                <!-- 4. PvP -->
+                <Border BorderBrush="Black" BorderThickness="1" CornerRadius="6">
+                    <Expander Header="PvP" Margin="10,5,10,5" Padding="5">
+                        <StackPanel>
+                            <CheckBox x:Name="CheckIsPvP" Content="启用PvP" IsChecked="{Binding Features.bIsPvP, Mode=TwoWay}" ToolTip="启用PvP模式" Margin="0,3,0,3" Checked="IsPvP_CheckedChanged" Unchecked="IsPvP_CheckedChanged" FontWeight="Bold"/>
+                            <ScrollViewer MaxHeight="400" VerticalScrollBarVisibility="Auto">
+                                <StackPanel>
+                                    <Border Background="#332222" CornerRadius="4" Padding="8" Margin="0,0,0,8">
+                                        <StackPanel>
+                                            <TextBlock FontWeight="Bold" Foreground="#FFCCCC" Text="启用PvP后生效以下变更：" Margin="0,0,0,6"/>
+                                            <TextBlock FontSize="12" Foreground="#FFCCCC" Text="• 玩家之间可以互相造成伤害。"/>
+                                            <TextBlock FontSize="12" Foreground="#FFCCCC" Text="• 基地帕鲁将攻击侵入你基地的敌对玩家。"/>
+                                            <TextBlock FontSize="12" Foreground="#FFCCCC" Text="• 空中玩家和骑乘帕鲁受到的所有伤害增加。"/>
+                                            <TextBlock FontSize="12" Foreground="#FFCCCC" Text="• 玩家对召唤帕鲁和基地帕鲁造成的伤害减少。"/>
+                                            <TextBlock FontSize="12" Foreground="#FFCCCC" Text="• 玩家可以访问其他公会拥有的箱子。"/>
+                                            <TextBlock FontSize="12" Foreground="#FFCCCC" Text="• 对其他玩家建造的建筑造成的近战伤害减少。"/>
+                                            <TextBlock FontSize="12" Foreground="#FFCCCC" Text="• 基地帕鲁将在大范围内攻击敌人。"/>
+                                            <TextBlock FontSize="12" Foreground="#FFCCCC" Text="• 基地之间的最小距离增加，你的基地必须与附近基地保持更远距离。"/>
+                                            <TextBlock FontSize="12" Foreground="#FFCCCC" Text="• 玩家名称和伤害数值的显示距离发生变化。"/>
+                                            <TextBlock FontSize="12" Foreground="#FFCCCC" Text="• 基地受到攻击时会发送通知，战斗期间无法在基地内建造或修理。"/>
+                                            <TextBlock FontSize="12" Foreground="#FFCCCC" Text="• 部分武器的射程和伤害已针对PvP进行调整。"/>
+                                            <TextBlock FontSize="12" Foreground="#FFCCCC" Text="• 禁用任务。"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Background="#223322" CornerRadius="4" Padding="8" Margin="0,0,0,8">
+                                        <StackPanel>
+                                            <TextBlock FontWeight="Bold" Foreground="#CCFFCC" Text="官方推荐PvP配置（启用PvP时建议设置以下值）：" Margin="0,0,0,6"/>
+                                            <TextBlock FontSize="12" Foreground="#CCFFCC" Text="┃ 允许分配攻击属性=False，允许分配生命属性=False"/>
+                                            <TextBlock FontSize="12" Foreground="#CCFFCC" Text="┃ 禁用影响平衡的科技（空涡龙的导弹发射器、唤夜兽的鞍具、钩爪、公会箱等）"/>
+                                            <TextBlock FontSize="12" Foreground="#CCFFCC" Text="┃ 仅限基地间快速旅行=True"/>
+                                            <TextBlock FontSize="12" Foreground="#CCFFCC" Text="┃ 离线后进入睡眠状态=True"/>
+                                            <TextBlock FontSize="12" Foreground="#CCFFCC" Text="┃ 允许选择起始位置=True"/>
+                                            <TextBlock FontSize="12" Foreground="#CCFFCC" Text="┃ 死亡惩罚=掉落所有物品和队伍中的帕鲁，可拾取其他公会死亡掉落=True"/>
+                                            <TextBlock FontSize="12" Foreground="#CCFFCC" Text="┃ 显示其他公会基地边界=False"/>
+                                            <TextBlock FontSize="12" Foreground="#CCFFCC" Text="┃ 禁止在传送点附近建造=True"/>
+                                            <TextBlock FontSize="12" Foreground="#CCFFCC" Text="┃ 公会最大玩家数=4，每个公会最大据点数量=2"/>
+                                            <TextBlock FontSize="12" Foreground="#CCFFCC" Text="┃ 建筑数量上限(0=无限)=1000"/>
+                                            <TextBlock FontSize="12" Foreground="#CCFFCC" Text="┃ 公会重新加入冷却(分钟)=60"/>
+                                            <TextBlock FontSize="12" Foreground="#CCFFCC" Text="┃ 复活冷却时间(秒)=5，复活惩罚时长阈值(秒)=1800，复活惩罚时间倍率=2"/>
+                                            <TextBlock FontSize="12" Foreground="#CCFFCC" Text="┃ 启用地图显示基地PvP物品数量=True"/>
+                                            <TextBlock FontSize="12" Foreground="#CCFFCC" Text="┃ 启用地图显示玩家PvP物品数量=True"/>
+                                            <TextBlock FontSize="12" Foreground="#CCFFCC" Text="┃ PvP奖励："/>
+                                            <TextBlock FontSize="12" Foreground="#CCFFCC" Text="┃   启用PvP击杀额外掉落=True"/>
+                                            <TextBlock FontSize="12" Foreground="#CCFFCC" Text="┃   掉落物品ID=PlayerDropItem（冠军徽章）"/>
+                                            <TextBlock FontSize="12" Foreground="#CCFFCC" Text="┃   掉落数量=1"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                                            <TextBlock Text="地图显示" FontWeight="Bold" Margin="0,0,0,3"/>
+                                            <CheckBox x:Name="CheckDisplayPvPItemNumOnWorldMap_BaseCamp" Content="地图显示基地PvP物品数量" IsChecked="{Binding Features.bDisplayPvPItemNumOnWorldMap_BaseCamp, Mode=TwoWay}" ToolTip="在地图上显示各基地的PvP专属物品数量" Margin="0,3,0,0"/>
+                                            <CheckBox x:Name="CheckDisplayPvPItemNumOnWorldMap_Player" Content="地图显示玩家PvP物品数量" IsChecked="{Binding Features.bDisplayPvPItemNumOnWorldMap_Player, Mode=TwoWay}" ToolTip="在地图上显示玩家位置和PvP专属物品数量" Margin="0,3,0,0"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" Margin="5,0,5,0">
+                                            <TextBlock Text="公会与防御" FontWeight="Bold" Margin="0,0,0,3"/>
+                                            <CheckBox x:Name="CheckEnableDefenseOtherGuildPlayer" Content="防御其他公会玩家" IsChecked="{Binding Features.bEnableDefenseOtherGuildPlayer, Mode=TwoWay}" ToolTip="启用防御其他公会玩家" Margin="0,3,0,0"/>
+                                            <CheckBox x:Name="CheckInvisibleOtherGuildBaseCampAreaFX" Content="显示其他公会基地边界" IsChecked="{Binding Features.bInvisibleOtherGuildBaseCampAreaFX, Mode=TwoWay}" ToolTip="显示其他公会基地范围边界" Margin="0,3,0,0"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" Margin="5,0,0,0">
+                                            <TextBlock Text="额外掉落" FontWeight="Bold" Margin="0,0,0,3"/>
+                                            <DockPanel x:Name="PvPDropItemIdPanel">
+                                                <TextBlock Text="PvP击杀额外掉落物品ID" Width="175" VerticalAlignment="Center"/>
+                                                <TextBox x:Name="PvPDropItemIdBox" TextChanged="PvPDropItemIdBox_TextChanged" Width="200"/>
+                                            </DockPanel>
+                                            <DockPanel x:Name="PvPDropItemNumPanel">
+                                                <TextBlock Text="PvP击杀额外掉落数量" Width="175" VerticalAlignment="Center" ToolTip="PvP模式下击杀玩家额外掉落物品的数量"/>
+                                                <ui:NumberBox Value="{Binding GameBalances.AdditionalDropItemNumWhenPlayerKillingInPvPMode, Mode=TwoWay}" Width="160" SmallChange="1" Maximum="100" Minimum="0" SpinButtonPlacementMode="Inline"/>
+                                            </DockPanel>
+                                            <CheckBox x:Name="CheckAdditionalPvPDrop" Content="启用PvP击杀额外掉落" IsChecked="{Binding GameBalances.bAdditionalDropItemWhenPlayerKillingInPvPMode, Mode=TwoWay}" ToolTip="是否在PvP启用时掉落特殊物品" Margin="0,3,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </StackPanel>
+                    </Expander>
+                </Border>
+
+                <!-- 5. 禁用科技 -->
+                <Border BorderBrush="Black" BorderThickness="1" CornerRadius="6">
+                    <Expander Header="禁用科技" Margin="10,5,10,5" Padding="5">
+                        <StackPanel>
+                            <DockPanel Margin="0,0,0,5">
+                                <TextBlock Text="已选择禁用科技数量：" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="TechCountTextBlock" Text="0" VerticalAlignment="Center" FontWeight="Bold"/>
+                            </DockPanel>
+                            <DockPanel Margin="0,0,0,5">
+                                <TextBlock Text="搜索科技：" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                <TextBox x:Name="TechSearchBox" TextChanged="TechSearchBox_TextChanged"/>
+                            </DockPanel>
+                            <ScrollViewer MaxHeight="400" VerticalScrollBarVisibility="Auto">
+                                <ItemsControl ItemsSource="{Binding TechItems, ElementName=ThisWindow}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <UniformGrid Columns="4"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <CheckBox Content="{Binding DisplayName}" IsChecked="{Binding IsChecked, Mode=TwoWay}" Margin="2,1">
+                                                <CheckBox.ToolTip>
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                                                        <TextBlock Text="{Binding Description}" TextWrapping="Wrap" MaxWidth="300" Margin="0,4,0,0"/>
+                                                    </StackPanel>
+                                                </CheckBox.ToolTip>
+                                            </CheckBox>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </StackPanel>
+                    </Expander>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

@@ -1,0 +1,31 @@
+﻿<ui:ContentDialog x:Class="PalworldServerManager.Controls.ModifyPsmNameDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="http://schemas.modernwpf.com/2019"
+             xmlns:local="clr-namespace:PalworldServerManager.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="250" d:DesignWidth="500"
+             PrimaryButtonText="确认修改"
+             CloseButtonText="取消"
+             PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+             DefaultButton="Primary">
+    <StackPanel>
+        <TextBlock Text="服务器原抬头名称（并非游戏中显示）：" FontSize="15" HorizontalAlignment="Center"/>
+        
+        <TextBlock x:Name="OriginName" Text="{Binding ssmServerName}" FontSize="20" HorizontalAlignment="Center" Margin="0,5,0,15"/>
+        
+        <TextBlock Text="要修改为：" FontSize="15" HorizontalAlignment="Center"/>
+
+        <TextBox x:Name="ModifyName" Margin="0,8,0,0" 
+                 HorizontalAlignment="Stretch" TextAlignment="Center"
+                 InputMethod.IsInputMethodEnabled="True"
+                 InputMethod.PreferredImeConversionMode="Native"
+                 InputMethod.PreferredImeState="On"/>
+
+        <TextBlock x:Name="DuplicateWarning" Text="该名称已被其他服务器使用，请输入不同的名称" 
+                   Foreground="Red" FontSize="13" HorizontalAlignment="Center"
+                   Margin="0,6,0,0" Visibility="Collapsed"/>
+    </StackPanel>
+</ui:ContentDialog>

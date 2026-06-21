@@ -1,0 +1,33 @@
+# ========== Build results ==========
+[Dd]ebug/
+[Rr]elease/
+[Bb]in/
+[Oo]bj/
+[Bb]uild/
+artifacts/
+
+# ========== Visual Studio ==========
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+*.csproj.user
+*.vbproj.user
+
+# ========== NuGet ==========
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nupkg
+
+# ========== Runtime Generated ==========
+PSMSettings.json
+debug.log
+
+# ========== Pre-built binaries ==========
+SSM/
+
+# ========== OS files ==========
+Thumbs.db
+Desktop.ini

@@ -1,0 +1,8 @@
+# Normalize line endings to LF in repo, CRLF on Windows checkout
+* text=auto eol=crlf
+
+# Binary files
+*.png binary
+*.ico binary
+*.exe binary
+*.dll binary
