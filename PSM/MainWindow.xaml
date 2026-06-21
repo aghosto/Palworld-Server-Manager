@@ -132,6 +132,12 @@
                                                     <TextBlock Text="导入地图存档"/>
                                                 </DockPanel>
                                             </Button>
+                                            <Button Grid.Column="1" Margin="5 10 5 5" Click="SaveEditorButton_Click" ToolTip="打开存档编辑器（SAV ↔ JSON）" Height="35" HorizontalAlignment="Stretch">
+                                                <DockPanel>
+                                                    <ui:SymbolIcon Symbol="Edit"/>
+                                                    <TextBlock Text="存档编辑器"/>
+                                                </DockPanel>
+                                            </Button>
                                             <Button Grid.Column="1" Margin="5 10 5 5" Click="ServerAccountExchangeButton_Click" ToolTip="打开服务器设置编辑器。" Height="35" HorizontalAlignment="Stretch">
                                                     <DockPanel>
                                                         <ui:SymbolIcon Symbol="People"/>

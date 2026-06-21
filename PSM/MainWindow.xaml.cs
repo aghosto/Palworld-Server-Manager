@@ -2390,6 +2390,24 @@ public partial class MainWindow : Window
         }
     }
 
+    private void SaveEditorButton_Click(object sender, RoutedEventArgs e)
+    {
+        var window = Application.Current.Windows.OfType<SaveEditorWindow>().FirstOrDefault();
+
+        if (window != null)
+        {
+            window.Activate();
+            window.Topmost = true;
+            window.Topmost = false;
+        }
+        else
+        {
+            window = new SaveEditorWindow();
+            window.Owner = this;
+            window.Show();
+        }
+    }
+
     private async void ServerAccountExchangeButton_Click(object sender, RoutedEventArgs e)
     {
         try
