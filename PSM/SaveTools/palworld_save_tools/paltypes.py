@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import Any, Callable
 
 from palworld_save_tools.archive import FArchiveReader, FArchiveWriter

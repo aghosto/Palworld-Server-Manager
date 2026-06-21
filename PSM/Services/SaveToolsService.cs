@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace PalworldServerManager.Services
@@ -9,11 +9,12 @@ namespace PalworldServerManager.Services
     public class SaveToolsService
     {
         private readonly string _pythonExe;
+        private readonly string _pythonVersion;
         private readonly string _convertScript;
 
         public SaveToolsService()
         {
-            _pythonExe = FindPython();
+            _pythonExe = FindPython(out _pythonVersion);
             _convertScript = Path.Combine(
                 AppDomain.CurrentDomain.BaseDirectory,
                 "SaveTools",
@@ -22,6 +23,8 @@ namespace PalworldServerManager.Services
         }
 
         public bool IsAvailable => !string.IsNullOrEmpty(_pythonExe) && File.Exists(_convertScript);
+
+        public string PythonVersion => _pythonVersion ?? "未检测到";
 
         public class ConvertResult
         {
@@ -86,13 +89,12 @@ namespace PalworldServerManager.Services
                 if (process.ExitCode == 0)
                 {
                     result.Success = true;
-                    // The output path is the input path with .json appended (or .sav.json -> .sav)
                     result.OutputPath = stdout.Trim();
                 }
                 else
                 {
                     result.Success = false;
-                    result.ErrorMessage = string.IsNullOrEmpty(stderr) ? stdout : stderr;
+                    result.ErrorMessage = FormatPythonError(stderr, stdout);
                 }
             }
             catch (Exception ex)
@@ -104,8 +106,22 @@ namespace PalworldServerManager.Services
             return result;
         }
 
-        private static string FindPython()
+        private static string FormatPythonError(string stderr, string stdout)
         {
+            var msg = string.IsNullOrEmpty(stderr) ? stdout : stderr;
+
+            // Check for common Python version issue
+            if (msg.Contains("TypeError") && msg.Contains("not subscriptable"))
+            {
+                return "Python 版本过低（需要 3.9+），请升级 Python 后重试。\n\n" + msg;
+            }
+
+            return msg;
+        }
+
+        private static string? FindPython(out string? version)
+        {
+            version = null;
             string[] candidates = { "python3", "python", "py" };
 
             foreach (var name in candidates)
@@ -123,14 +139,20 @@ namespace PalworldServerManager.Services
                     });
                     if (proc == null) continue;
                     proc.WaitForExit(3000);
-                    if (proc.ExitCode == 0) return name;
+                    if (proc.ExitCode == 0)
+                    {
+                        var ver = proc.StandardOutput.ReadToEnd().Trim();
+                        if (string.IsNullOrEmpty(ver))
+                            ver = proc.StandardError.ReadToEnd().Trim();
+                        version = ver;
+                        return name;
+                    }
                 }
                 catch
                 {
                 }
             }
 
-            // Check common install paths
             string[] commonPaths =
             {
                 @"C:\Program Files\Python313\python.exe",
@@ -138,7 +160,6 @@ namespace PalworldServerManager.Services
                 @"C:\Program Files\Python311\python.exe",
                 @"C:\Program Files\Python310\python.exe",
                 @"C:\Program Files\Python39\python.exe",
-                @"C:\Program Files\Python38\python.exe",
                 @"C:\Users\%USERNAME%\AppData\Local\Programs\Python\Python313\python.exe",
                 @"C:\Users\%USERNAME%\AppData\Local\Programs\Python\Python312\python.exe",
                 @"C:\Users\%USERNAME%\AppData\Local\Programs\Python\Python311\python.exe",
@@ -148,7 +169,36 @@ namespace PalworldServerManager.Services
             foreach (var raw in commonPaths)
             {
                 var path = Environment.ExpandEnvironmentVariables(raw);
-                if (File.Exists(path)) return path;
+                if (File.Exists(path))
+                {
+                    try
+                    {
+                        using var proc = Process.Start(new ProcessStartInfo
+                        {
+                            FileName = path,
+                            Arguments = "--version",
+                            UseShellExecute = false,
+                            CreateNoWindow = true,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true
+                        });
+                        if (proc != null)
+                        {
+                            proc.WaitForExit(3000);
+                            if (proc.ExitCode == 0)
+                            {
+                                var ver = proc.StandardOutput.ReadToEnd().Trim();
+                                if (string.IsNullOrEmpty(ver))
+                                    ver = proc.StandardError.ReadToEnd().Trim();
+                                version = ver;
+                                return path;
+                            }
+                        }
+                    }
+                    catch
+                    {
+                    }
+                }
             }
 
             return null;

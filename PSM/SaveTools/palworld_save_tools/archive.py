@@ -1,10 +1,11 @@
+from __future__ import annotations
 import io
 import math
 import os
 import struct
 import sys
 import uuid
-from typing import Any, Callable, Optional, Sequence, Union
+from typing import Any, Callable, Dict, List, Optional, Sequence, Union
 
 # Alias stdlib types to avoid name conflicts
 _float = float
@@ -190,7 +191,7 @@ else:
 
 # Specify a type for JSON-serializable objects
 JSON = Union[
-    None, bool, int, float, str, list["JSON"], dict[str, "JSON"], UUID, uuid.UUID
+    None, bool, int, float, str, List["JSON"], Dict[str, "JSON"], UUID, uuid.UUID
 ]
 
 

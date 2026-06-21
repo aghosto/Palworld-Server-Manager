@@ -26,6 +26,10 @@ namespace PalworldServerManager
                 ConvertToJsonButton.IsEnabled = false;
                 ConvertToSavButton.IsEnabled = false;
             }
+            else
+            {
+                StatusBarText.Text = $"就绪 (Python: {_saveTools.PythonVersion})";
+            }
         }
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
