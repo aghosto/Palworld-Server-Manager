@@ -1,6 +1,8 @@
 <Window x:Class="PalworldServerManager.SaveEditorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:PalworldServerManager" xmlns:controls="clr-namespace:PalworldServerManager.Controls"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
         Title="存档编辑器"
         Width="1200" Height="800"
         WindowStartupLocation="CenterOwner"
