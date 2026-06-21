@@ -26,17 +26,12 @@
 
 		<Copy
 		  SourceFiles="@(OutputFiles)"
-		  DestinationFolder="E:\Zero\GitHub\VRisingMod\SSM\%(RecursiveDir)"
+		  DestinationFolder="$(SolutionDir)SSM\bin\Debug\$(TargetFramework)\%(RecursiveDir)"
 		  SkipUnchangedFiles="true" />
 
 		<Copy
 		  SourceFiles="@(OutputFiles)"
-		  DestinationFolder="E:\Zero\GitHub\Palworld-Server-Manager\SSM\bin\Debug\net6.0-windows7.0\%(RecursiveDir)"
-		  SkipUnchangedFiles="true" />
-
-		<Copy
-		  SourceFiles="@(OutputFiles)"
-		  DestinationFolder="E:\Zero\GitHub\Palworld-Server-Manager\SSM\bin\Release\net6.0-windows7.0\%(RecursiveDir)"
+		  DestinationFolder="$(SolutionDir)SSM\bin\Release\$(TargetFramework)\%(RecursiveDir)"
 		  SkipUnchangedFiles="true" />
 	</Target>
 
